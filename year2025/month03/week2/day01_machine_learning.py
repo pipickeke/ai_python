@@ -1,7 +1,8 @@
 from sklearn.datasets import load_iris
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.model_selection import train_test_split
-
+from sklearn.feature_extraction.text import CountVectorizer,TfidfVectorizer
+import jieba
 
 
 
@@ -36,9 +37,73 @@ def dict_demo():
     print("data_new:\n", data_new)
 
 
+def count_demo():
+    """
+    文本特征抽取
+    :return:
+    """
+    data = ["life is short, i like like python","life is too lang, i dislike python"]
+    transfer = CountVectorizer(stop_words=["is","too"])
+    date_new = transfer.fit_transform(data)
+    # print("data_new: \n", date_new)
+    print("data_new: \n", date_new.toarray())
+    print("特征名字：\n", transfer.get_feature_names_out())
 
+
+def cut_word(text):
+    """
+    进行中文分词
+    :param text:
+    :return:
+    """
+    text = " ".join(list(jieba.cut(text)))
+    return text
+
+
+def count_chinese_demo():
+    """
+    中文文本特征提取，自动分词
+    :return:
+    """
+    data = ["一种还是一种今天很残酷，明天更残酷，后天很美好，但绝对大部分是死在明天晚上，所以每个人不要放弃今天。",
+            "我们看到的从很远星系来的光是在几百万年前发出的，这样当我们看到宇宙时，我们是在看它的过去",
+            "如果只用一种方式了解某样事物，你就不会真正了解它。了解事物真正含义的秘密取决于如何将其与我们所了解的事物相联系。"]
+
+    data_new = []
+    for i in data:
+        data_new.append(cut_word(i))
+    print("data_new: \n",data_new)
+
+    transfer = CountVectorizer(stop_words=["一种","所以"])
+    data_final = transfer.fit_transform(data_new)
+    print("data_final: \n", data_final)
+    print("特征名字：\n", transfer.get_feature_names_out())
+
+
+def tfidf_demo():
+    """
+    用TF-IDF的方法进行文本特征抽取
+    :return:
+    """
+    data = ["一种还是一种今天很残酷，明天更残酷，后天很美好，但绝对大部分是死在明天晚上，所以每个人不要放弃今天。",
+            "我们看到的从很远星系来的光是在几百万年前发出的，这样当我们看到宇宙时，我们是在看它的过去",
+            "如果只用一种方式了解某样事物，你就不会真正了解它。了解事物真正含义的秘密取决于如何将其与我们所了解的事物相联系。"]
+
+    data_new = []
+    for i in data:
+        data_new.append(cut_word(i))
+    transfer = TfidfVectorizer()
+
+    data_final = transfer.fit_transform(data_new)
+    print("data_final: \n", data_final.toarray())
+    print("特征名字：\n", transfer.get_feature_names_out())
 
 
 if __name__ == '__main__':
     # datasets_demo()
-    dict_demo()
+    # dict_demo()
+    # count_demo()
+    # str = "我爱北京天安门"
+    # cut_word(str)
+    # count_chinese_demo()
+    tfidf_demo()
