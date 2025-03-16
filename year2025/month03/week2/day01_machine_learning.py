@@ -4,7 +4,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer,TfidfVectorizer
 import jieba
 import pandas as pd
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from sklearn.feature_selection import VarianceThreshold
+from scipy.stats import pearsonr
+import matplotlib.pyplot as plt
 
 
 
@@ -117,6 +120,47 @@ def minmax_demo():
     print("data_new: \n", data_new)
 
 
+
+def stand_demo():
+    """
+    标准化
+    :return:
+    """
+    data = pd.read_csv("dating.csv", sep='\t')
+    data = data.iloc[:, :3]
+    print("data: \n",data)
+
+    transfer = StandardScaler()
+    data_new = transfer.fit_transform(data)
+    print("data_new: \n", data_new)
+
+
+
+def variance_demo():
+    """
+    过滤低方差特征
+    :return:
+    """
+    data = pd.read_csv("factor_returns.csv")
+    data = data.iloc[:, 1:-2]
+    print("data: \n",data)
+
+    transfer = VarianceThreshold(threshold=10)
+    data_new = transfer.fit_transform(data)
+    print("data_new: \n", data_new)
+    print("data_new: \n", data_new.shape)
+
+    r1 = pearsonr(data['pe_ratio'], data['pb_ratio'])
+    print("相关系数：\n", r1)
+
+    r2 = pearsonr(data['revenue'], data['total_expense'])
+    print("revenue和total_expense相关性：\n", r2)
+
+    plt.scatter(data['revenue'], data['total_expense'])
+    plt.show()
+
+
+
 if __name__ == '__main__':
     # datasets_demo()
     # dict_demo()
@@ -125,4 +169,6 @@ if __name__ == '__main__':
     # cut_word(str)
     # count_chinese_demo()
     # tfidf_demo()
-    minmax_demo()
+    # minmax_demo()
+    # stand_demo()
+    variance_demo()
