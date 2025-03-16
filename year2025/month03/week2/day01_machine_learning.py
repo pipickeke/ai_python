@@ -3,6 +3,8 @@ from sklearn.feature_extraction import DictVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer,TfidfVectorizer
 import jieba
+import pandas as pd
+from sklearn.preprocessing import MinMaxScaler
 
 
 
@@ -99,6 +101,22 @@ def tfidf_demo():
     print("特征名字：\n", transfer.get_feature_names_out())
 
 
+def minmax_demo():
+    """
+    归一化
+    :return:
+    """
+    data = pd.read_csv("dating.csv", sep='\t')
+    data = data.iloc[:, :3]
+    print("data: \n", data)
+
+    # 可以选择不同的特征值范围
+    # transfer = MinMaxScaler()
+    transfer = MinMaxScaler()
+    data_new = transfer.fit_transform(data)
+    print("data_new: \n", data_new)
+
+
 if __name__ == '__main__':
     # datasets_demo()
     # dict_demo()
@@ -106,4 +124,5 @@ if __name__ == '__main__':
     # str = "我爱北京天安门"
     # cut_word(str)
     # count_chinese_demo()
-    tfidf_demo()
+    # tfidf_demo()
+    minmax_demo()
