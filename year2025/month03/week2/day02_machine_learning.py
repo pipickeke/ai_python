@@ -4,6 +4,9 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import GridSearchCV
 import numpy as np
+from sklearn.datasets import fetch_20newsgroups
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.naive_bayes import MultinomialNB
 
 
 
@@ -71,6 +74,32 @@ def knn_iris_gscv():
     print("交叉验证结果: \n", estimator.cv_results_)
 
 
+
+def nb_news():
+    """
+    朴素贝叶斯算法对新闻进行分类
+    :return:
+    """
+    news = fetch_20newsgroups(subset='all')
+
+    x_train, x_test, y_train, y_test = train_test_split(news.data, news.target)
+
+    transfer = TfidfVectorizer()
+    x_train = transfer.fit_transform(x_train)
+    x_test = transfer.transform(x_test)
+
+    estimator = MultinomialNB()
+    estimator.fit(x_train, y_train)
+
+    y_predict = estimator.predict(x_test)
+    print("预测值 y_predict: \n", y_predict)
+    print("真实值和预测值比较：\n", y_test == y_predict)
+
+    print("准确率：\n", estimator.score(x_test, y_test))
+
+
+
 if __name__ == '__main__':
     # knn_iris()
-    knn_iris_gscv()
+    # knn_iris_gscv()
+    nb_news()
