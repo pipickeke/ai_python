@@ -7,6 +7,7 @@ import numpy as np
 from sklearn.datasets import fetch_20newsgroups
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
+from sklearn.tree import DecisionTreeClassifier, export_graphviz
 
 
 
@@ -99,7 +100,31 @@ def nb_news():
 
 
 
+def decision_iris():
+    """
+    用决策树对鸢尾花进行分类
+    :return:
+    """
+    iris = load_iris()
+    x_train,x_test,y_train,y_test = train_test_split(iris.data, iris.target, random_state=22)
+
+    estimator = DecisionTreeClassifier(criterion="entropy")
+    estimator.fit(x_train, y_train)
+
+    y_predict = estimator.predict(x_test)
+    print("预测值：\n", y_predict)
+
+    print("准确率： \n", estimator.score(x_test, y_test))
+
+    # 可视化决策树
+    # http://webgraphviz.com/ 可视化
+    export_graphviz(estimator, out_file="iris_tree.dot",
+                    feature_names=iris.feature_names)
+
+
+
 if __name__ == '__main__':
     # knn_iris()
     # knn_iris_gscv()
-    nb_news()
+    # nb_news()
+    decision_iris()
